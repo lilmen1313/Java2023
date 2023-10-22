@@ -31,13 +31,7 @@ public class Main {
         setLaptop.add(laptop2);
         setLaptop.add(laptop3);
 
-//        Map<String, Object> filters = new HashMap<>(); // критерии фильтра
-//        filters.put("Объем видеопамяти", 10);
-//        filters.put("Объем жесткого диска", 512);
-//        filters.put("Название видеокарты", "RTX 2080");
-
-        Map<String, Object> filters = getCriteria();
-//        System.out.println(filters);
+        Map<String, Object> filters = getCriteria(); // метод для запроса критериев от пользователя
 
         Set<Laptop> newLaptop = filterLaptops(setLaptop, filters);
         System.out.println(newLaptop);
@@ -45,6 +39,50 @@ public class Main {
 
     static public Map<String, Object> getCriteria(){
 
+        Map<Integer, String> contsMap = getInfoCriteria();
+        for (Map.Entry<Integer, String> entry: contsMap.entrySet()){
+            System.out.println(entry);
+        }
+
+        Map<String, Object> result = new HashMap<>(); //коллекция с критериями от пользователя
+        Scanner scanner = new Scanner(System.in);
+
+        while (true){
+
+            System.out.print(System.lineSeparator() + "Введите номер критерия: ");
+            int number = Integer.parseInt(scanner.nextLine());
+            if (number == 0) break;
+
+            switch (number){
+                case 1:
+                case 2:
+                case 5:
+                    System.out.print("Введите значение критерия: ");
+                    Object value = scanner.nextLine();
+                    result.put(contsMap.get(number), value);
+                    break;
+                case 3:
+                case 4:
+                case 6:
+                case 7:
+                case 8:
+                    System.out.print("Введите значение критерия: ");
+                    value = Integer.parseInt(scanner.nextLine());
+                    result.put(contsMap.get(number), value);
+                    break;
+                case 9:
+                    System.out.print("Введите значение критерия: ");
+                    value = Double.parseDouble(scanner.nextLine());
+                    result.put(contsMap.get(number), value);
+                    break;
+            }
+        }
+
+        scanner.close();
+        return result;
+    }
+
+    private static Map<Integer, String> getInfoCriteria() {
         Map<Integer, String> contsMap = new HashMap<>();
         contsMap.put(0, "Выход");
         contsMap.put(1, "Название производителя ноутбука");
@@ -56,33 +94,7 @@ public class Main {
         contsMap.put(7, "Объем оперативной памяти");
         contsMap.put(8, "Объем жесткого диска");
         contsMap.put(9, "Диагональ экрана");
-
-        boolean flag = true;
-        Map<String, Object> result = new HashMap<>(); //коллекция с критериями от пользователя
-        Scanner scanner = new Scanner(System.in);
-
-        while (flag){
-
-            for (Map.Entry<Integer, String> entry: contsMap.entrySet()){
-                System.out.println(entry);
-            }
-//            System.out.println();
-
-            System.out.print(System.lineSeparator() + "Введите номер критерия: ");
-            int number = Integer.parseInt(scanner.nextLine());
-
-            if (number == 0) {
-                break;
-            }
-
-            System.out.print("Введите значение критерия: ");
-            Object value = scanner.nextLine();
-
-            result.put(contsMap.get(number), value);
-        }
-
-        scanner.close();
-        return result;
+        return contsMap;
     }
 
     public static Set<Laptop> filterLaptops(Set<Laptop> setLap, Map<String, Object> filter){ //вход-множество ноутбуков, критерии фильтрации
